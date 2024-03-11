@@ -51,6 +51,12 @@ RUN set -ex \
         tar tcl tcl8.6 telnet texinfo time tk tk-dev tzdata \
         unzip upx vim wget xfsprogs xml-core xmlto xorriso xsltproc \
         xvfb xz-utils zip zlib1g-dev zsync \
+    # Install Terraform
+    && wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+    && gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint \
+    && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list \
+    && apt update \
+    && apt-get install terraform \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update && \
