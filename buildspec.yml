@@ -4,9 +4,13 @@ phases:
   build:
     commands:
       - cd ubuntu/standard/7.0
-      - ECR_URL=948396734470.dkr.ecr.ap-southeast-2.amazonaws.com/cicd
+      - REGION=ap-southeast-2
+      - REGISTRY=948396734470.dkr.ecr.$REGION.amazonaws.com
+      - ECR_URL=$REGISTRY/cicd
       - IMAGE_NAME=codebuild
-      - aws ecr get-login-password  | docker login --username AWS --password-stdin $ECR_URL$/IMAGE_NAME
+      - aws ecr get-login-password | docker login --username AWS --password-stdin $REGISTRY
       - docker build -t $IMAGE_NAME -f Dockerfile .
-      - docker tag codebuild $ECR_URL/$IMAGE_NAME:latest
-      - docker push $ECR_URL/$IMAGE_NAME:latest
+      - TAG_NAME="$(date +%Y-%m-%d)-$CODEBUILD_BUILD_NUMBER"
+      - docker tag $IMAGE_NAME "$ECR_URL/$IMAGE_NAME:$TAG_NAME"
+      - docker push "$ECR_URL/$IMAGE_NAME:$TAG_NAME"
+      - 'echo "Final image: $ECR_URL/$IMAGE_NAME:$TAG_NAME"'
