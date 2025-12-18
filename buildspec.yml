@@ -13,3 +13,4 @@ phases:
       - TAG_NAME="$(date +%Y-%m-%d)-$CODEBUILD_BUILD_NUMBER"
       - docker tag $IMAGE_NAME $ECR_URL/$IMAGE_NAME:$TAG_NAME
       - docker push $ECR_URL/$IMAGE_NAME:$TAG_NAME
+      - echo "Final image: $ECR_URL/$IMAGE_NAME:$TAG_NAME"
