@@ -3,7 +3,7 @@ version: 0.2
 phases:
   build:
     commands:
-      - cd ubuntu/standard/7.0
+      - cd ubuntu/qv/7.0
       - REGION=ap-southeast-2
       - REGISTRY=948396734470.dkr.ecr.$REGION.amazonaws.com
       - ECR_URL=$REGISTRY/cicd

@@ -1,0 +1,61 @@
+version: 0.1
+
+runtimes:
+  java:
+    versions:
+      corretto8:
+        commands:
+          - echo "Installing Corretto(OpenJDK) version 8 ..."
+          - export JAVA_HOME="$JAVA_8_HOME"
+          - export JRE_HOME="$JRE_8_HOME"
+          - export JDK_HOME="$JDK_8_HOME"
+          - |-
+            for tool_path in "$JAVA_HOME"/bin/*;
+             do tool=`basename "$tool_path"`;
+              if [ $tool != 'java-rmi.cgi' ];
+              then
+                rm -f /usr/bin/$tool /var/lib/alternatives/$tool;
+                update-alternatives --install /usr/bin/$tool $tool $tool_path 20000;
+                update-alternatives --set $tool $tool_path;
+              fi;
+            done
+      default:
+        commands:
+          - echo "Installing custom Corretto(OpenJDK) version $VERSION ..."
+          - apt-get update
+          - apt-get install -y java-$VERSION-amazon-corretto-jdk
+          - export JAVA_HOME="/usr/lib/jvm/java-$VERSION-amazon-corretto"
+          - export JRE_HOME="/usr/lib/jvm/java-$VERSION-amazon-corretto"
+          - export JDK_HOME="/usr/lib/jvm/java-$VERSION-amazon-corretto"
+          - |-
+            for tool_path in "$JAVA_HOME"/bin/*;
+             do tool=`basename "$tool_path"`;
+              if [ $tool != 'java-rmi.cgi' ];
+              then
+                rm -f /usr/bin/$tool /var/lib/alternatives/$tool;
+                update-alternatives --install /usr/bin/$tool $tool $tool_path 20000;
+                update-alternatives --set $tool $tool_path;
+              fi;
+            done
+  nodejs:
+    versions:
+      24:
+        commands:
+          - echo "Installing Node.js version 24 ..."
+          - n $NODE_24_VERSION
+      22:
+        commands:
+          - echo "Installing Node.js version 22 ..."
+          - n $NODE_22_VERSION
+      20:
+        commands:
+          - echo "Installing Node.js version 20 ..."
+          - n $NODE_20_VERSION
+      18:
+        commands:
+          - echo "Installing Node.js version 18 ..."
+          - n $NODE_18_VERSION
+      default:
+        commands:
+          - echo "Installing custom Node.js version $VERSION ..."
+          - n --no-preserve $VERSION && rm -rf /tmp/*
