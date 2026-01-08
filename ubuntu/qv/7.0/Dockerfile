@@ -26,38 +26,9 @@ RUN set -ex \
     && ssh-keyscan -t rsa,dsa,ed25519,ecdsa -H bitbucket.org >> ~/.ssh/known_hosts \
     && chmod 600 ~/.ssh/known_hosts \
     && apt-get install -y -qq --no-install-recommends \
-        acl apt-utils aria2 asciidoc autoconf automake \
-        binutils bison brotli build-essential bzip2 bzr \
-        coreutils curl dirmngr dnsutils docbook-xml docbook-xsl dpkg dpkg-dev \
-        e2fsprogs expect fakeroot file findutils flex fonts-noto-color-emoji ftp \
-        g++ gcc git-lfs gettext gettext-base gnupg2 groff gzip \
-        haveged imagemagick iproute2 iptables jq less \
-        lib32z1 libapr1 libaprutil1 libargon2-0-dev libbz2-dev \
-        libc++-dev libc++abi-dev libc6-dev libcurl4-openssl-dev \
-        libdb-dev libdbd-sqlite3-perl libdbi-perl libdpkg-perl \
-        libedit-dev liberror-perl libevent-dev libffi-dev  \
-        libgeoip-dev libgbm-dev libgconf-2-4 libglib2.0-dev libgsl-dev libgtk-3-0 \
-        libhttp-date-perl libio-pty-perl libjpeg-dev libkrb5-dev liblzma-dev \
-        libmagic-dev libmagickcore-dev libmagickwand-dev libmysqlclient-dev \
-        libncurses5-dev libncursesw5-dev libonig-dev libpq-dev libreadline-dev \
-        libsecret-1-dev libserf-1-1 libsodium-dev libsqlite3-dev libssl-dev \
-        libsvn1 libsvn-perl libtcl8.6 libtidy-dev libtimedate-perl libtool libunwind8 \
-        libwebp-dev libxkbfile-dev libxml2-dev libxml2-utils libxslt1-dev libxss1 \
-        libyaml-dev libyaml-perl libzip-dev llvm locales lz4 \
-        m4 make mediainfo mercurial mlocate net-tools netbase netcat \
-        openssl patch p7zip-full p7zip-rar parallel pass patchelf pigz pkg-config pollinate procps \
-        python-is-python3 python3-configobj python3-openssl rpm rsync \
-        sgml-base sgml-data shellcheck sphinxsearch sqlite3 ssh sshpass subversion sudo swig systemd-coredump \
-        tar tcl tcl8.6 telnet texinfo time tk tk-dev tzdata \
-        unzip upx vim wget xfsprogs xml-core xmlto xorriso xsltproc \
-        xvfb xz-utils zip zlib1g-dev zsync \
-    # Install Terraform
-    && wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg \
-    && gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint \
-    && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list \
-    && apt update \
-    && apt-get install terraform=1.14.3-1 \
-    && rm -rf /var/lib/apt/lists/*
+        build-essential coreutils curl dpkg gettext gnupg2 less \
+        libcurl4-openssl-dev liberror-perl libexpat1-dev libssl-dev \
+        locales make netbase openssl patch tar unzip wget zip zlib1g-dev
 
 RUN apt-get update && \
     apt-get install -y unattended-upgrades && \
@@ -92,6 +63,16 @@ RUN set -ex \
     && git --version
 
 # ! Removed AWS SAM CLI installation
+
+# Install Terraform
+RUN set -ex \
+    && TERRAFORM_VERSION=1.14.3-1 \
+    && wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg \
+    && gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint \
+    && echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list \
+    && apt update \
+    && apt-get install -y -qq --no-install-recommends terraform=$TERRAFORM_VERSION \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install AWS CLI v2
 # https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-linux.html
